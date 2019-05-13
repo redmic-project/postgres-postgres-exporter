@@ -1,0 +1,45 @@
+version: '3.5'
+
+services:
+  postgres-exporter:
+    image: ${IMAGE_NAME:-wrouesnel/postgres_exporter}:${IMAGE_TAG:-latest}
+    command:
+      - --log.level=${LOG_LEVEL}
+    environment:
+      DATA_SOURCE_NAME:
+      PG_EXPORTER_WEB_LISTEN_ADDRESS:
+      PG_EXPORTER_WEB_TELEMETRY_PATH:
+      PG_EXPORTER_DISABLE_DEFAULT_METRICS:
+      PG_EXPORTER_DISABLE_SETTINGS_METRICS:
+      PG_EXPORTER_CONSTANT_LABELS:
+    networks:
+      - postgres-net
+      - metric-net
+    healthcheck:
+      test: wget --spider -q http://localhost:${PG_EXPORTER_WEB_LISTEN_ADDRESS}
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 1m
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        delay: 30s
+        window: 1m
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 64M
+        reservations:
+          cpus: '0.001'
+          memory: 32M
+
+networks:
+  postgres-net:
+    name: ${POSTGRES_NET_NAME:-postgres-net}
+    external: true
+
+  metric-net:
+    name: ${METRIC_NET_NAME:-metric-net}
+    external: true

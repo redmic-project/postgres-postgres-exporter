@@ -1,0 +1,8 @@
+version: '3.5'
+
+services:
+  postgres-exporter:
+    deploy:
+      placement:
+        constraints:
+          - node.role == worker

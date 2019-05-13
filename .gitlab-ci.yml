@@ -1,0 +1,20 @@
+include:
+  - project: 'redmic-project/gitlab-ci-templates'
+    ref: master
+    file: '/deployment.yml'
+
+stages:
+  - deploy
+
+variables:
+  STACK: postgres
+  IMAGE_NAME: wrouesnel/postgres_exporter
+  IMAGE_TAG: latest
+
+.deploy:
+  script:
+    - >
+      deploy.sh IMAGE_NAME=${IMAGE_NAME} IMAGE_TAG=${IMAGE_TAG} DATA_SOURCE_NAME=${DATA_SOURCE_NAME}
+      PG_EXPORTER_DISABLE_DEFAULT_METRICS=${PG_EXPORTER_DISABLE_DEFAULT_METRICS}
+      PG_EXPORTER_DISABLE_SETTINGS_METRICS=${PG_EXPORTER_DISABLE_SETTINGS_METRICS}
+      PG_EXPORTER_CONSTANT_LABELS=${PG_EXPORTER_CONSTANT_LABELS} LOG_LEVEL=${LOG_LEVEL}
