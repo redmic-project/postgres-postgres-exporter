@@ -16,7 +16,7 @@ services:
       - postgres-net
       - metric-net
     healthcheck:
-      test: wget --spider -q http://localhost:${PG_EXPORTER_WEB_LISTEN_ADDRESS}
+      test: wget --spider -q http://localhost${PG_EXPORTER_WEB_LISTEN_ADDRESS}
       interval: 30s
       timeout: 10s
       retries: 3
