@@ -1,3 +1,3 @@
 # Postgres Exporter
 
-Deployment of a PostgresSQL metric exporter for Prometheus
+Deployment of a PostgreSQL metric exporter for Prometheus
