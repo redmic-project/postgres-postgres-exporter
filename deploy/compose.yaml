@@ -1,33 +1,33 @@
-version: '3.5'
-
 services:
   postgres-exporter:
-    image: ${IMAGE_NAME:-wrouesnel/postgres_exporter}:${IMAGE_TAG:-latest}
+    image: ${IMAGE_NAME:-quay.io/prometheuscommunity/postgres-exporter}:${IMAGE_TAG:-latest}
     command:
+      - --web.listen-address=${WEB_LISTEN_ADDRESS}
       - --log.level=${LOG_LEVEL}
     environment:
-      DATA_SOURCE_NAME:
-      PG_EXPORTER_WEB_LISTEN_ADDRESS:
+      DATA_SOURCE_URI:
+      DATA_SOURCE_USER:
+      DATA_SOURCE_PASS:
       PG_EXPORTER_WEB_TELEMETRY_PATH:
       PG_EXPORTER_DISABLE_DEFAULT_METRICS:
       PG_EXPORTER_DISABLE_SETTINGS_METRICS:
-      PG_EXPORTER_CONSTANT_LABELS:
     networks:
       - postgres-net
       - metric-net
     deploy:
       mode: replicated
-      replicas: 1
+      replicas: ${REPLICAS:-1}
       restart_policy:
-        delay: 30s
-        window: 1m
+        delay: ${RESTART_DELAY:-30s}
+      update_config:
+        delay: ${UPDATE_DELAY:-1m}
       resources:
         limits:
-          cpus: '0.5'
-          memory: 64M
+          cpus: '${RESOURCES_LIMITS_CPUS:-0.5}'
+          memory: ${RESOURCES_LIMITS_MEMORY:-64M}
         reservations:
-          cpus: '0.001'
-          memory: 32M
+          cpus: '${RESOURCES_RESERVATIONS_CPUS:-0.001}'
+          memory: ${RESOURCES_RESERVATIONS_MEMORY:-32M}
 
 networks:
   postgres-net:
